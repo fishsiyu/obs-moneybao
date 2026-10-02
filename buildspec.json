@@ -36,7 +36,7 @@
             "bundleId": "com.example.plugintemplate-for-obs"
         }
     },
-    "name": "dvd-bounce-image",
+    "name": "obs-moneybao",
     "displayName": "OBS-moneybao",
     "version": "1.0.0",
     "author": "fish811",

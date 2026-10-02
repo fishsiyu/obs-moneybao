@@ -21,4 +21,24 @@ cmake --build --preset windows-x64 --config RelWithDebInfo
 cmake --install build_x64 --config RelWithDebInfo
 ```
 
-构建产物位于 `build_x64/rundir/RelWithDebInfo/`。安装命令会复制到 `C:/ProgramData/obs-studio/plugins/dvd-bounce-image/`。安装后重启 OBS，在“来源”中添加“OBS-moneybao”，选择图片并调整速度、方向和大小。
+构建产物位于 `build_x64/rundir/RelWithDebInfo/`。安装命令会复制到 `C:/ProgramData/obs-studio/plugins/obs-moneybao/`（文件夹名取自 `buildspec.json` 的 `name`）。“来源”中添加“OBS-moneybao”，选择图片并调整速度、方向和大小，重启 OBS 后生效。
+
+## 打包 Release
+
+本地打包：先构建，再把插件安装到一个独立的 release 目录，最后压缩该目录内容。
+
+```powershell
+cmake --build --preset windows-x64 --config RelWithDebInfo
+cmake --install build_x64 --config RelWithDebInfo --prefix "$PWD/release/RelWithDebInfo"
+
+$zip = "$PWD/release/obs-moneybao-1.0.0-windows-x64.zip"
+Remove-Item $zip -ErrorAction SilentlyContinue
+Compress-Archive -Path "$PWD/release/RelWithDebInfo/*" -DestinationPath $zip -CompressionLevel Optimal
+```
+
+发布到 GitHub：推送一个符合 `主版本.次版本.修订号` 的标签，`push.yaml` 工作流会在 CI 上构建各平台产物并创建 draft release。
+
+```powershell
+git tag 1.0.0
+git push origin 1.0.0
+```
